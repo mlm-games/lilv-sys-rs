@@ -1,3 +1,5 @@
+use std::os::raw::c_char;
+
 use lv2_raw::*;
 
 type LV2_Handle = LV2Handle;
@@ -116,7 +118,9 @@ pub unsafe fn lilv_instance_get_extension_data(
             if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
                 return (descriptor
                     .extension_data
-                    .expect("Wrong, read the docs dumdum"))(uri);
+                    .expect("Wrong, read the docs dumdum"))(
+                    uri as *const c_char
+                );
             }
         };
         std::ptr::null()
