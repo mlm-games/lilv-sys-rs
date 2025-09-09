@@ -1,14 +1,17 @@
 [package]
 name = "lilv-sys"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Will Medrano <will.s.medrano@gmail.com>"]
 description = "FFI for lilv, a C library to make the use of LV2 plugins simple"
 edition = "2018"
 license = "MIT"
 keywords = ["audio", "lilv", "lv2"]
-repository = "https://github.com/wmedrano/lilv-sys-rs"
+repository = "https://github.com/mlm-games/lilv-sys-rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-lv2_raw = "0.2"
+lv2_raw = "0.3"
+
+[patch.crates-io]
+lv2_raw = { git = "https://github.com/mlm-games/lv2_raw" }

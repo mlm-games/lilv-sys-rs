@@ -99,11 +99,13 @@ pub unsafe fn lilv_instance_deactivate(instance: *mut crate::LilvInstance) {
 #[inline(always)]
 pub unsafe fn lilv_instance_get_extension_data(
     instance: *mut crate::LilvInstance,
-    uri: *const u8,
+    uri: *const i8,
 ) -> *const ::std::os::raw::c_void {
     if let Some(instance) = instance.as_ref() {
         if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
-            return (descriptor.extension_data)(uri);
+            return (descriptor
+                .extension_data
+                .expect("Wrong, read the docs dumdum"))(uri);
         }
     };
     std::ptr::null()
