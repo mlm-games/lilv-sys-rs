@@ -5,4 +5,4 @@ mod inline_fns;
 pub use bindgen::*;
 pub use inline_fns::*;
 #[link(name = "lilv-0")]
-extern "C" {}
+unsafe extern "C" {}
