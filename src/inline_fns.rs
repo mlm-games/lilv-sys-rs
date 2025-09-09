@@ -13,13 +13,15 @@ type LV2_Descriptor = LV2Descriptor;
 pub unsafe fn lilv_instance_get_uri(
     instance: *const crate::LilvInstance,
 ) -> *const std::os::raw::c_char {
-    instance
-        .as_ref()
-        .iter()
-        .flat_map(|i| i.lv2_descriptor.as_ref())
-        .map(|d| d.uri)
-        .next()
-        .unwrap_or(std::ptr::null())
+    unsafe {
+        instance
+            .as_ref()
+            .iter()
+            .flat_map(|i| i.lv2_descriptor.as_ref())
+            .map(|d| d.uri)
+            .next()
+            .unwrap_or(std::ptr::null())
+    }
 }
 
 /// Connect a port to a data location.
@@ -34,9 +36,11 @@ pub unsafe fn lilv_instance_connect_port(
     port_index: u32,
     data_location: *mut ::std::os::raw::c_void,
 ) {
-    if let Some(instance) = instance.as_mut() {
-        if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
-            (descriptor.connect_port)(instance.lv2_handle, port_index, data_location);
+    unsafe {
+        if let Some(instance) = instance.as_mut() {
+            if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
+                (descriptor.connect_port)(instance.lv2_handle, port_index, data_location);
+            }
         }
     }
 }
@@ -49,10 +53,12 @@ pub unsafe fn lilv_instance_connect_port(
 /// # Safety
 /// Makes use of unsafe ffi functions.
 pub unsafe fn lilv_instance_activate(instance: *const crate::LilvInstance) {
-    if let Some(instance) = instance.as_ref() {
-        if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
-            if let Some(activate_fn) = descriptor.activate {
-                (activate_fn)(instance.lv2_handle);
+    unsafe {
+        if let Some(instance) = instance.as_ref() {
+            if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
+                if let Some(activate_fn) = descriptor.activate {
+                    (activate_fn)(instance.lv2_handle);
+                }
             }
         }
     }
@@ -66,9 +72,11 @@ pub unsafe fn lilv_instance_activate(instance: *const crate::LilvInstance) {
 /// Makes use of unsafe ffi functions.
 #[inline(always)]
 pub unsafe fn lilv_instance_run(instance: *const crate::LilvInstance, sample_count: u32) {
-    if let Some(instance) = instance.as_ref() {
-        if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
-            (descriptor.run)(instance.lv2_handle, sample_count);
+    unsafe {
+        if let Some(instance) = instance.as_ref() {
+            if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
+                (descriptor.run)(instance.lv2_handle, sample_count);
+            }
         }
     }
 }
@@ -81,10 +89,12 @@ pub unsafe fn lilv_instance_run(instance: *const crate::LilvInstance, sample_cou
 /// Makes use of unsafe ffi functions.
 #[inline(always)]
 pub unsafe fn lilv_instance_deactivate(instance: *mut crate::LilvInstance) {
-    if let Some(instance) = instance.as_ref() {
-        if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
-            if let Some(deactivate_fn) = descriptor.deactivate {
-                (deactivate_fn)(instance.lv2_handle);
+    unsafe {
+        if let Some(instance) = instance.as_ref() {
+            if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
+                if let Some(deactivate_fn) = descriptor.deactivate {
+                    (deactivate_fn)(instance.lv2_handle);
+                }
             }
         }
     }
@@ -101,14 +111,16 @@ pub unsafe fn lilv_instance_get_extension_data(
     instance: *mut crate::LilvInstance,
     uri: *const i8,
 ) -> *const ::std::os::raw::c_void {
-    if let Some(instance) = instance.as_ref() {
-        if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
-            return (descriptor
-                .extension_data
-                .expect("Wrong, read the docs dumdum"))(uri);
-        }
-    };
-    std::ptr::null()
+    unsafe {
+        if let Some(instance) = instance.as_ref() {
+            if let Some(descriptor) = instance.lv2_descriptor.as_ref() {
+                return (descriptor
+                    .extension_data
+                    .expect("Wrong, read the docs dumdum"))(uri);
+            }
+        };
+        std::ptr::null()
+    }
 }
 
 /// Get the LV2_Descriptor of the plugin instance.
@@ -121,10 +133,12 @@ pub unsafe fn lilv_instance_get_extension_data(
 pub unsafe fn lilv_instance_get_descriptor(
     instance: *const crate::LilvInstance,
 ) -> *const LV2_Descriptor {
-    instance
-        .as_ref()
-        .map(|i| i.lv2_descriptor)
-        .unwrap_or(::std::ptr::null())
+    unsafe {
+        instance
+            .as_ref()
+            .map(|i| i.lv2_descriptor)
+            .unwrap_or(::std::ptr::null())
+    }
 }
 
 /// Get the LV2_Handle of the plugin instance.
@@ -137,8 +151,10 @@ pub unsafe fn lilv_instance_get_descriptor(
 /// Makes use of unsafe ffi functions.
 #[inline(always)]
 pub unsafe fn lilv_instance_get_handle(instance: *const crate::LilvInstance) -> LV2_Handle {
-    instance
-        .as_ref()
-        .map(|i| i.lv2_handle)
-        .unwrap_or(::std::ptr::null_mut())
+    unsafe {
+        instance
+            .as_ref()
+            .map(|i| i.lv2_handle)
+            .unwrap_or(::std::ptr::null_mut())
+    }
 }
